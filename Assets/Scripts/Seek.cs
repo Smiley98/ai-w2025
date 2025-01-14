@@ -3,9 +3,10 @@ using UnityEngine;
 public class Seek : MonoBehaviour
 {
     public GameObject target;
-    float speed = 25.0f;
+    float speed = 2.0f;
     Rigidbody2D rb;
 
+    // Optional task 1: Make a separate GameObject that uses LineSeek to illustrate the difference between line vs curve seek
     // Outputs the *position change* to move FROM seeker TO target in a line
     Vector3 LineSeek()
     {
@@ -15,6 +16,7 @@ public class Seek : MonoBehaviour
         return change;
     }
 
+    // Optional task 2: Add a function called CurveFlee that flees the target instead of seeking the target
     Vector2 CurveSeek()
     {
         Vector2 currentVelocity = rb.linearVelocity;
@@ -22,6 +24,8 @@ public class Seek : MonoBehaviour
         Vector2 seekForce = desiredVelocity - currentVelocity;
         return seekForce;
     }
+
+    // Optional task 3: Write code to rotate the seeker in the direction of its velocity (2% in lab 2, due on the 26th)
 
     void Start()
     {
