@@ -42,15 +42,24 @@ public class Seek : MonoBehaviour
         //Vector2 seekForce = Steering.Seek(rb, target.transform.position, moveSpeed, turnSpeed);
         //rb.AddForce(seekForce);
 
-        Vector2 rayEnd = transform.position + mouseDirection * 5.0f;
-        Debug.DrawLine(transform.position, rayEnd);
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, rayEnd);
-        if (hit)
+        Vector3 rayDirLeft = Quaternion.Euler(0.0f, 0.0f, 20.0f) * mouseDirection;
+        Vector3 rayDirRight = Quaternion.Euler(0.0f, 0.0f, -20.0f) * mouseDirection;
+        Vector2 rayEndLeft = transform.position + rayDirLeft * 5.0f;
+        Vector2 rayEndRight = transform.position + rayDirRight * 5.0f;
+        Debug.DrawLine(transform.position, rayEndLeft, Color.blue);
+        Debug.DrawLine(transform.position, rayEndRight, Color.magenta);
+        RaycastHit2D hitLeft = Physics2D.Raycast(transform.position, rayEndLeft);
+        RaycastHit2D hitRight = Physics2D.Raycast(transform.position, rayEndRight);
+        if (hitLeft)
         {
-            Debug.Log(hit.collider.name);
+            Debug.Log("Left hit: " + hitLeft.collider.name);
+        }
+        else if (hitRight)
+        {
+            Debug.Log("Right hit: " + hitRight.collider.name);
         }
 
-        Vector2 seekForce = CurveSeek(mouse);
-        rb.AddForce(seekForce);
+        //Vector2 seekForce = CurveSeek(mouse);
+        //rb.AddForce(seekForce);
     }
 }
