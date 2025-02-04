@@ -1,6 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public struct Cell
+{
+    public int row;
+    public int col;
+
+    public static bool Equals(Cell a, Cell b)
+    {
+        return a.row == b.row && a.col == b.col;
+    }
+
+    public static Cell Invalid()
+    {
+        return new Cell { row = -1, col = -1 };
+    }
+}
+
 public class Grid : MonoBehaviour
 {
     [SerializeField]
@@ -42,13 +58,49 @@ public class Grid : MonoBehaviour
             tileObjects.Add(rowObjects);
             y -= 1.0f;
         }
-
-        DrawGradient();
     }
 
     void Update()
     {
-        
+        DrawGradient();
+
+        Vector2 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Cell cell = WorldToGrid(mouse);
+        Debug.Log("Row: " + cell.row + " Col: " + cell.col);
+
+        // If our cell is on the grid (meaning its not invalid):
+        if (!Cell.Equals(cell, Cell.Invalid()))
+        {
+            // Colour the cell that our cursor is inside of magenta.
+            GameObject cellObj = tileObjects[cell.row][cell.col];
+            cellObj.GetComponent<SpriteRenderer>().color = Color.magenta;
+
+            // Colour all adjacent cells blue!
+            List<Cell> cells = Adjacent(cell);
+            for (int i = 0; i < cells.Count; i++)
+            {
+                // If you did task 1 correctly, you should see a blue "plus" around your cursor!
+                Cell adj = cells[i];
+                GameObject adjObj = tileObjects[adj.row][adj.col];
+                adjObj.GetComponent<SpriteRenderer>().color = Color.blue;
+            }
+        }
+    }
+
+    // Task 1:
+    // Given a cell, output the left, right, up, and down neighbouring cells\
+    // Ensure you don't return cells outside of the grid!
+    List<Cell> Adjacent(Cell cell)
+    {
+        List<Cell> cells = new List<Cell>();
+        // TODO - add left of cell if within grid bounds (done for you)
+        Cell left = new Cell { row = cell.row, col = cell.col - 1 };
+        if (left.col >= 0) cells.Add(left);
+
+        // TODO - add right of cell if within grid bounds
+        // TODO - add up of cell if within grid bounds
+        // TODO - add down of cell if within grid bounds
+        return cells;
     }
 
     void DrawGradient()
@@ -66,5 +118,16 @@ public class Grid : MonoBehaviour
                 go.GetComponent<SpriteRenderer>().color = color;
             }
         }
+    }
+
+    Cell WorldToGrid(Vector3 pos)
+    {
+        if (pos.x < 0.0f || pos.x > cols || pos.y < 0.0f || pos.y > rows)
+            return Cell.Invalid();
+
+        Cell cell = new Cell();
+        cell.col = (int)pos.x;
+        cell.row = (rows - 1) - (int)pos.y;
+        return cell;
     }
 }
