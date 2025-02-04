@@ -23,28 +23,48 @@ public class Grid : MonoBehaviour
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }  // 9
     };                                                             // Rows ^
 
-    List<GameObject> tileObjects = new List<GameObject>();
+    List<List<GameObject>> tileObjects = new List<List<GameObject>>();
 
     void Start()
     {
-        
         float y = 9.5f;
         for (int row = 0; row < rows; row++)
         {
+            List<GameObject> rowObjects = new List<GameObject>();
             float x = 0.5f;
             for (int col = 0; col < cols; col++)
             {
                 GameObject tile = Instantiate(tilePrefab);
                 tile.transform.position = new Vector3(x, y);
-                tileObjects.Add(tile);
+                rowObjects.Add(tile);
                 x += 1.0f;
             }
+            tileObjects.Add(rowObjects);
             y -= 1.0f;
         }
+
+        DrawGradient();
     }
 
     void Update()
     {
         
+    }
+
+    void DrawGradient()
+    {
+        float y = 9.5f;
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < cols; col++)
+            {
+                GameObject go = tileObjects[row][col];
+                Vector2 pos = go.transform.position;
+                float u = pos.x / (float)cols;
+                float v = pos.y / (float)rows;
+                Color color = new Color(u, v, 0.0f);
+                go.GetComponent<SpriteRenderer>().color = color;
+            }
+        }
     }
 }
