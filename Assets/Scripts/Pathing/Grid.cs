@@ -27,14 +27,19 @@ public class Grid : MonoBehaviour
 
     void Start()
     {
-        float x = 0.5f;
+        
         float y = 9.5f;
-        for (int i = 0; i < cols; i++)
+        for (int row = 0; row < rows; row++)
         {
-            GameObject tile = Instantiate(tilePrefab);
-            tile.transform.position = new Vector3(x, y);
-            tileObjects.Add(tile);
-            x += 1.0f;
+            float x = 0.5f;
+            for (int col = 0; col < cols; col++)
+            {
+                GameObject tile = Instantiate(tilePrefab);
+                tile.transform.position = new Vector3(x, y);
+                tileObjects.Add(tile);
+                x += 1.0f;
+            }
+            y -= 1.0f;
         }
     }
 
