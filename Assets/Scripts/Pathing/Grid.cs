@@ -9,6 +9,9 @@ public class Grid : MonoBehaviour
     const int rows = 10;
     const int cols = 20;
 
+    [SerializeField]
+    int iterations;
+
     int[,] tiles =
     {   //0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 <-- Columns
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, // 0
@@ -23,7 +26,7 @@ public class Grid : MonoBehaviour
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }  // 9
     };                                                             // Rows ^
 
-    List<List<GameObject>> tileObjects = new List<List<GameObject>>();
+    public List<List<GameObject>> tileObjects = new List<List<GameObject>>();
 
     void Start()
     {
@@ -49,24 +52,26 @@ public class Grid : MonoBehaviour
         DrawGradient();
 
         Vector2 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Cell cell = WorldToGrid(mouse);
-        Debug.Log("Row: " + cell.row + " Col: " + cell.col);
+        Cell mouseCell = WorldToGrid(mouse);
+        Debug.Log("Row: " + mouseCell.row + " Col: " + mouseCell.col);
 
-        if (!Cell.Equals(cell, Cell.Invalid()))
+        if (!Cell.Equals(mouseCell, Cell.Invalid()))
         {
-            DrawCell(cell, Color.magenta);
-            List<Cell> cells = Pathing.Adjacent(cell, rows, cols);
-            for (int i = 0; i < cells.Count; i++)
-                DrawCell(cells[i], Color.blue);
+            DrawCell(mouseCell, Color.magenta);
+            foreach (Cell adj in Pathing.Adjacent(mouseCell, rows, cols))
+                DrawCell(adj, Color.blue);
         }
 
         Cell start = new Cell { row = 7, col = 3 };
         Cell end = new Cell { row = 2, col = 16 };
         DrawCell(start, Color.green);
         DrawCell(end, Color.red);
+        List<Cell> path = Pathing.FloodFill(start, end, tiles, iterations, this);
+        foreach (Cell cell in path)
+            DrawCell(cell, Color.blue);
     }
 
-    void DrawCell(Cell cell, Color color)
+    public void DrawCell(Cell cell, Color color)
     {
         GameObject obj = tileObjects[cell.row][cell.col];
         obj.gameObject.GetComponent<SpriteRenderer>().color = color;
