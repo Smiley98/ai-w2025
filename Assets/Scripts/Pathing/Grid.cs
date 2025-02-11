@@ -1,22 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public struct Cell
-{
-    public int row;
-    public int col;
-
-    public static bool Equals(Cell a, Cell b)
-    {
-        return a.row == b.row && a.col == b.col;
-    }
-
-    public static Cell Invalid()
-    {
-        return new Cell { row = -1, col = -1 };
-    }
-}
-
 public class Grid : MonoBehaviour
 {
     [SerializeField]
@@ -68,23 +52,24 @@ public class Grid : MonoBehaviour
         Cell cell = WorldToGrid(mouse);
         Debug.Log("Row: " + cell.row + " Col: " + cell.col);
 
-        // If our cell is on the grid (meaning its not invalid):
         if (!Cell.Equals(cell, Cell.Invalid()))
         {
-            // Colour the cell that our cursor is inside of magenta.
-            GameObject cellObj = tileObjects[cell.row][cell.col];
-            cellObj.GetComponent<SpriteRenderer>().color = Color.magenta;
-
-            // Colour all adjacent cells blue!
+            DrawCell(cell, Color.magenta);
             List<Cell> cells = Pathing.Adjacent(cell, rows, cols);
             for (int i = 0; i < cells.Count; i++)
-            {
-                // If you did task 1 correctly, you should see a blue "plus" around your cursor!
-                Cell adj = cells[i];
-                GameObject adjObj = tileObjects[adj.row][adj.col];
-                adjObj.GetComponent<SpriteRenderer>().color = Color.blue;
-            }
+                DrawCell(cells[i], Color.blue);
         }
+
+        Cell start = new Cell { row = 7, col = 3 };
+        Cell end = new Cell { row = 2, col = 16 };
+        DrawCell(start, Color.green);
+        DrawCell(end, Color.red);
+    }
+
+    void DrawCell(Cell cell, Color color)
+    {
+        GameObject obj = tileObjects[cell.row][cell.col];
+        obj.gameObject.GetComponent<SpriteRenderer>().color = color;
     }
 
     void DrawGradient()
