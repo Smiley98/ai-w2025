@@ -76,7 +76,7 @@ public class Grid : MonoBehaviour
             cellObj.GetComponent<SpriteRenderer>().color = Color.magenta;
 
             // Colour all adjacent cells blue!
-            List<Cell> cells = Adjacent(cell);
+            List<Cell> cells = Pathing.Adjacent(cell, rows, cols);
             for (int i = 0; i < cells.Count; i++)
             {
                 // If you did task 1 correctly, you should see a blue "plus" around your cursor!
@@ -85,22 +85,6 @@ public class Grid : MonoBehaviour
                 adjObj.GetComponent<SpriteRenderer>().color = Color.blue;
             }
         }
-    }
-
-    // Task 1:
-    // Given a cell, output the left, right, up, and down neighbouring cells\
-    // Ensure you don't return cells outside of the grid!
-    List<Cell> Adjacent(Cell cell)
-    {
-        List<Cell> cells = new List<Cell>();
-        // TODO - add left of cell if within grid bounds (done for you)
-        Cell left = new Cell { row = cell.row, col = cell.col - 1 };
-        if (left.col >= 0) cells.Add(left);
-
-        // TODO - add right of cell if within grid bounds
-        // TODO - add up of cell if within grid bounds
-        // TODO - add down of cell if within grid bounds
-        return cells;
     }
 
     void DrawGradient()
