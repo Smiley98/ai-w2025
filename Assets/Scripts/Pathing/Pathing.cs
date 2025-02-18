@@ -65,6 +65,15 @@ public static class Pathing
                 break;
             }
 
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    if (closed[row, col])
+                        grid.DrawCell(new Cell { row = row, col = col }, Color.gray);
+                }
+            }
+
             grid.DrawCell(front, Color.magenta);
 
             // Otherwise, continue our search by enqueuing adjacent tiles!
