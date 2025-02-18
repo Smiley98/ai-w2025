@@ -88,9 +88,10 @@ public class Grid : MonoBehaviour
         Cell end = new Cell { row = 2, col = 16 };
         DrawCell(start, Color.green);
         DrawCell(end, Color.red);
-        List<Cell> path = Pathing.FloodFill(start, end, tiles, iterations, this);
+        //List<Cell> path = Pathing.FloodFill(start, end, tiles, iterations, this);
+        List<Cell> path = Pathing.Dijkstra(start, end, tiles, iterations, this);
         foreach (Cell cell in path)
-            DrawCell(cell, Color.blue);
+            DrawCell(cell, Color.cyan);
     }
 
     public void DrawCell(Cell cell, Color color)
@@ -122,6 +123,16 @@ public class Grid : MonoBehaviour
         colors[WATER] = Color.blue;
         colors[GRASS] = Color.green;
         return colors[type];
+    }
+
+    public int TileType(Cell cell)
+    {
+        return tiles[cell.row, cell.col];
+    }
+
+    public bool IsDebugDraw()
+    {
+        return true;
     }
 
     void DrawGradient()

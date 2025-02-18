@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 public struct Cell
 {
@@ -47,6 +48,8 @@ public static class Pathing
         open.Enqueue(start);
         bool found = false;
 
+        List<Cell> debugCells = new List<Cell>();
+
         // Search until there's nothing left to explore
         //while (open.Count > 0)
 
@@ -55,6 +58,9 @@ public static class Pathing
         {
             // Examing the front of the queue ("first in line")
             Cell front = open.Dequeue();
+
+            if (grid.IsDebugDraw() && closed[front.row, front.col] == false)
+                debugCells.Add(front);
 
             // Prevent the explored cell from being revisited (prevents infinite loop)
             closed[front.row, front.col] = true;
@@ -65,8 +71,6 @@ public static class Pathing
                 found = true;
                 break;
             }
-            
-            grid.DrawCell(front, Color.magenta);
 
             // Otherwise, continue our search by enqueuing adjacent tiles!
             foreach (Cell adj in Adjacent(front, rows, cols))
@@ -80,28 +84,78 @@ public static class Pathing
             }
         }
 
+        if (!found)
+        {
+            foreach (Cell cell in debugCells)
+                grid.DrawCell(cell, Color.magenta);
+        }
+
         // If we've found the end, retrace our steps. Otherwise, there's no solution so return an empty list.
         List<Cell> result = found ? Retrace(nodes, start, end) : new List<Cell>();
         return result;
     }
 
-    //public static List<Cell>Dijkstra(Cell start, Cell end, int[,] tiles, int iterations, Grid grid)
-    //{
-    //    int rows = tiles.GetLength(0);
-    //    int cols = tiles.GetLength(1);
-    //    bool[,] closed = new bool[rows, cols];  // <-- Cells we've already explored (can't explore again otherwise infinite loop)
-    //    Node[,] nodes = new Node[rows, cols];   // <-- Connections between cells (each cell and what came before each cell)
-    //    for (int row = 0; row < rows; row++)
-    //    {
-    //        for (int col = 0; col < cols; col++)
-    //        {
-    //            closed[row, col] = tiles[row, col] == 1;
-    //            nodes[row, col].curr = new Cell { row = row, col = col };
-    //            nodes[row, col].prev = Cell.Invalid();
-    //            nodes[row, col].cost = float.MaxValue;
-    //        }
-    //    }
-    //}
+    public static List<Cell>Dijkstra(Cell start, Cell end, int[,] tiles, int iterations, Grid grid)
+    {
+        int rows = tiles.GetLength(0);
+        int cols = tiles.GetLength(1);
+        Node[,] nodes = new Node[rows, cols];   // <-- Connections between cells (each cell and what came before each cell)
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < cols; col++)
+            {
+                nodes[row, col].curr = new Cell { row = row, col = col };
+                nodes[row, col].prev = Cell.Invalid();
+                nodes[row, col].cost = float.MaxValue;
+            }
+        }
+
+        PriorityQueue<Cell, float> open = new PriorityQueue<Cell, float>();
+        open.Enqueue(start, 0.0f);
+        nodes[start.row, start.col].cost = 0.0f;
+
+        HashSet<Cell> debugCells = new HashSet<Cell>();
+
+        bool found = false;
+        for (int i = 0; i < iterations; i++)
+        {
+            // Examine the cell with the highest priority (lowest cost)
+            Cell front = open.Dequeue();
+
+            // Stop searching if we've reached our goal
+            if (Cell.Equals(front, end))
+            {
+                found = true;
+                break;
+            }
+
+            if (grid.IsDebugDraw())
+                debugCells.Add(front);
+
+            // Update cell cost and add it to open list if the new cost is cheaper than the old cost
+            foreach (Cell adj in Adjacent(front, rows, cols))
+            {
+                float prevCost = nodes[adj.row, adj.col].cost;
+                float currCost = nodes[front.row, front.col].cost + grid.TileCost(grid.TileType(adj));
+                if (currCost < prevCost)
+                {
+                    open.Enqueue(adj, currCost);
+                    nodes[adj.row, adj.col].cost = currCost;
+                    nodes[adj.row, adj.col].prev = front;
+                }
+            }
+        }
+
+        if (!found)
+        {
+            foreach (Cell cell in debugCells)
+                grid.DrawCell(cell, Color.magenta);
+        }
+
+        // If we've found the end, retrace our steps. Otherwise, there's no solution so return an empty list.
+        List<Cell> result = found ? Retrace(nodes, start, end) : new List<Cell>();
+        return result;
+    }
 
     static List<Cell> Retrace(Node[,] nodes, Cell start, Cell end)
     {
@@ -119,8 +173,13 @@ public static class Pathing
         for (int i = 0; i < 32; i++)
         {
             // 1. Add curr to path
+            path.Add(curr);
+
             // 2. Set curr equal to prev
+            curr = prev;
+
             // 3. Set prev equal to the cell that came before curr (query the node grid just like when we defined prev)
+            prev = nodes[curr.row, curr.col].prev;
 
             // If the previous cell is invalid, meaning there's no previous cell, then we've reached the start!
             if (Cell.Equals(prev, Cell.Invalid()))
