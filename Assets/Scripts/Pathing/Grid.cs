@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Utils;
 
 public class Grid : MonoBehaviour
 {
@@ -45,6 +46,20 @@ public class Grid : MonoBehaviour
             tileObjects.Add(rowObjects);
             y -= 1.0f;
         }
+
+        // Dequeues based on lowest priority -- logs c, b, a
+        PriorityQueue<int, float> pq = new PriorityQueue<int, float>();
+        int a = 4;
+        int b = 8;
+        int c = 12;
+        pq.Enqueue(a, 3.0f);
+        pq.Enqueue(b, 2.0f);
+        pq.Enqueue(c, 1.0f);
+        while (pq.Count > 0)
+        {
+            int n = pq.Dequeue();
+            Debug.Log(n);
+        }
     }
 
     void Update()
@@ -53,7 +68,7 @@ public class Grid : MonoBehaviour
 
         Vector2 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Cell mouseCell = WorldToGrid(mouse);
-        Debug.Log("Row: " + mouseCell.row + " Col: " + mouseCell.col);
+        //Debug.Log("Row: " + mouseCell.row + " Col: " + mouseCell.col);
 
         if (!Cell.Equals(mouseCell, Cell.Invalid()))
         {
