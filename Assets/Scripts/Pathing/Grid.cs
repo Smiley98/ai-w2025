@@ -10,6 +10,12 @@ public class Grid : MonoBehaviour
     const int rows = 10;
     const int cols = 20;
 
+    const int AIR = 0;
+    const int ROCK = 1;
+    const int WATER = 2;
+    const int GRASS = 3;
+    const int TILE_TYPE_COUNT = 4;
+
     [SerializeField]
     int iterations;
 
@@ -19,10 +25,10 @@ public class Grid : MonoBehaviour
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 1
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 2
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 3
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 4
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 5
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 6
-        { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 7
+        { 1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1 }, // 4
+        { 1, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 1 }, // 5
+        { 1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 1 }, // 6
+        { 1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 7
         { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // 8
         { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }  // 9
     };                                                             // Rows ^
@@ -64,7 +70,8 @@ public class Grid : MonoBehaviour
 
     void Update()
     {
-        DrawGradient();
+        //DrawGradient();
+        DrawTiles();
 
         Vector2 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Cell mouseCell = WorldToGrid(mouse);
@@ -73,8 +80,8 @@ public class Grid : MonoBehaviour
         if (!Cell.Equals(mouseCell, Cell.Invalid()))
         {
             DrawCell(mouseCell, Color.magenta);
-            foreach (Cell adj in Pathing.Adjacent(mouseCell, rows, cols))
-                DrawCell(adj, Color.blue);
+            //foreach (Cell adj in Pathing.Adjacent(mouseCell, rows, cols))
+            //    DrawCell(adj, Color.blue);
         }
 
         Cell start = new Cell { row = 7, col = 3 };
@@ -92,9 +99,33 @@ public class Grid : MonoBehaviour
         obj.gameObject.GetComponent<SpriteRenderer>().color = color;
     }
 
+    //public void DrawCell(Cell cell, int type)
+    //{
+    //    DrawCell(cell, colors[type]);
+    //}
+
+    public float TileCost(int type)
+    {
+        float[] costs = new float[TILE_TYPE_COUNT];
+        costs[AIR] = 1.0f;
+        costs[ROCK] = 100.0f;
+        costs[WATER] = 25.0f;
+        costs[GRASS] = 10.0f;
+        return costs[type];
+    }
+
+    public Color TileColor(int type)
+    {
+        Color[] colors = new Color[TILE_TYPE_COUNT];
+        colors[AIR] = Color.white;
+        colors[ROCK] = Color.gray;
+        colors[WATER] = Color.blue;
+        colors[GRASS] = Color.green;
+        return colors[type];
+    }
+
     void DrawGradient()
     {
-        float y = 9.5f;
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)
@@ -105,6 +136,19 @@ public class Grid : MonoBehaviour
                 float v = pos.y / (float)rows;
                 Color color = new Color(u, v, 0.0f);
                 go.GetComponent<SpriteRenderer>().color = color;
+            }
+        }
+    }
+
+    void DrawTiles()
+    {
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < cols; col++)
+            {
+                int type = tiles[row, col];
+                Cell cell = new Cell { row = row, col = col };
+                DrawCell(cell, TileColor(type));
             }
         }
     }

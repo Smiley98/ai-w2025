@@ -21,6 +21,7 @@ public struct Node
 {
     public Cell curr; // Current cell
     public Cell prev; // Parent (cell before current)
+    public float cost;// How expensive it is to move to this node
 }
 
 public static class Pathing
@@ -83,6 +84,24 @@ public static class Pathing
         List<Cell> result = found ? Retrace(nodes, start, end) : new List<Cell>();
         return result;
     }
+
+    //public static List<Cell>Dijkstra(Cell start, Cell end, int[,] tiles, int iterations, Grid grid)
+    //{
+    //    int rows = tiles.GetLength(0);
+    //    int cols = tiles.GetLength(1);
+    //    bool[,] closed = new bool[rows, cols];  // <-- Cells we've already explored (can't explore again otherwise infinite loop)
+    //    Node[,] nodes = new Node[rows, cols];   // <-- Connections between cells (each cell and what came before each cell)
+    //    for (int row = 0; row < rows; row++)
+    //    {
+    //        for (int col = 0; col < cols; col++)
+    //        {
+    //            closed[row, col] = tiles[row, col] == 1;
+    //            nodes[row, col].curr = new Cell { row = row, col = col };
+    //            nodes[row, col].prev = Cell.Invalid();
+    //            nodes[row, col].cost = float.MaxValue;
+    //        }
+    //    }
+    //}
 
     static List<Cell> Retrace(Node[,] nodes, Cell start, Cell end)
     {
