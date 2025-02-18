@@ -59,6 +59,7 @@ public static class Pathing
             // Examing the front of the queue ("first in line")
             Cell front = open.Dequeue();
 
+            // Add to current cell to debug render (and prevent duplicates by ensuring its unexplored)
             if (grid.IsDebugDraw() && closed[front.row, front.col] == false)
                 debugCells.Add(front);
 
@@ -114,9 +115,8 @@ public static class Pathing
         open.Enqueue(start, 0.0f);
         nodes[start.row, start.col].cost = 0.0f;
 
-        HashSet<Cell> debugCells = new HashSet<Cell>();
-
         bool found = false;
+        HashSet<Cell> debugCells = new HashSet<Cell>();
         for (int i = 0; i < iterations; i++)
         {
             // Examine the cell with the highest priority (lowest cost)
@@ -157,6 +157,7 @@ public static class Pathing
         return result;
     }
 
+    // Looks like task 2 has also been done for you... Enjoy a free lab I guess
     static List<Cell> Retrace(Node[,] nodes, Cell start, Cell end)
     {
         List<Cell> path = new List<Cell>();
