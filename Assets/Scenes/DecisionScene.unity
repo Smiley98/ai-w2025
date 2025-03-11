@@ -196,6 +196,8 @@ GameObject:
   - component: {fileID: 709184337}
   - component: {fileID: 709184336}
   - component: {fileID: 709184335}
+  - component: {fileID: 709184338}
+  - component: {fileID: 709184339}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -277,6 +279,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &709184338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709184334}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4461bf25d698d3f489e558f9d58ddc98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isVisible: 0
+  isAudible: 0
+  isNear: 0
+  isFlank: 0
+--- !u!114 &709184339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 709184334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93b411e1e45d424fa10c4b050d6a14e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1100107169
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -620,7 +650,6 @@ MonoBehaviour:
   - {fileID: 1100107171}
   - {fileID: 1357797114}
   - {fileID: 1273004358}
-  speed: 90
 --- !u!50 &1834238896
 Rigidbody2D:
   serializedVersion: 5
