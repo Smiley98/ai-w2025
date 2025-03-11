@@ -31,6 +31,7 @@ public abstract class ActionNode : TreeNode
     }
 }
 
+[System.Serializable]
 public class IsVisibleNode : DecisionNode
 {
     // In practice, this would be a line-of-sight test
@@ -42,6 +43,7 @@ public class IsVisibleNode : DecisionNode
     }
 }
 
+[System.Serializable]
 public class IsAudibleNode : DecisionNode
 {
     // In practice, this would a loudness check
@@ -53,6 +55,7 @@ public class IsAudibleNode : DecisionNode
     }
 }
 
+[System.Serializable]
 public class IsNearNode : DecisionNode
 {
     // In practice, this would a distance check
@@ -64,6 +67,7 @@ public class IsNearNode : DecisionNode
     }
 }
 
+[System.Serializable]
 public class IsFlankNode : DecisionNode
 {
     // In practice, this would an angle check
@@ -102,16 +106,33 @@ public class DoAttackNode : ActionNode
     }
 }
 
-// Add results 2-5 (2% each) for lab 6!
 public class DecisionTreeNodesTheory : MonoBehaviour
 {
+    [SerializeField]
+    IsVisibleNode isVisible = new IsVisibleNode();
+
+    [SerializeField]
+    IsAudibleNode isAudible = new IsAudibleNode();
+
+    [SerializeField]
+    IsNearNode isNear = new IsNearNode();
+
+    [SerializeField]
+    IsFlankNode isFlank = new IsFlankNode();
+
+    DoCreepNode doCreep = new DoCreepNode();
+    DoMoveNode doMove = new DoMoveNode();
+    DoAttackNode doAttack = new DoAttackNode();
+
+    // Add results 2-5 (2% each) for lab 6!
     void Start()
     {
-        
+        isVisible.no = isAudible;
+        isAudible.yes = doCreep;
     }
 
     void Update()
     {
-        
+        TreeNode.Traverse(isVisible);
     }
 }
