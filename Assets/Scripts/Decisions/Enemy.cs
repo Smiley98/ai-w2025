@@ -2,6 +2,17 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    enum State
+    {
+        PATROL,
+        ATTACK
+    }
+
+    State state = State.PATROL;
+
+    [SerializeField]
+    GameObject player;
+
     // Logic variables
     [SerializeField]
     GameObject[] waypoints;
@@ -20,7 +31,31 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
+        float distance = Vector2.Distance(player.transform.position, gameObject.transform.position);
+        state = distance <= 3.0f ? State.ATTACK : State.PATROL;
+
+        switch (state)
+        {
+            case State.PATROL:
+                Patrol();
+                break;
+
+            case State.ATTACK:
+                Attack();
+                break;
+        }
+    }
+
+    void Patrol()
+    {
         Vector2 force = Steering.FollowLine(gameObject, waypoints, ref curr, ref next, ahead, speed);
+        transform.up = rb.linearVelocity.normalized;
+        rb.AddForce(force);
+    }
+
+    void Attack()
+    {
+        Vector2 force = Steering.Seek(rb, player.transform.position, speed);
         transform.up = rb.linearVelocity.normalized;
         rb.AddForce(force);
     }
