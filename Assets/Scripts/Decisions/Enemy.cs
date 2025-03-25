@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -31,8 +32,16 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        float distance = Vector2.Distance(player.transform.position, gameObject.transform.position);
-        state = distance <= 3.0f ? State.ATTACK : State.PATROL;
+        // Better gameplay idea:
+        // Instead of shooting a ray where the enemy is looking, shoot a ray towards the player.
+        // Next week we will do this. We will add obstacles to the scene so the player isn't always visible!
+        // We will also add combat!!!
+
+        bool hit = Physics2D.Raycast(transform.position, transform.up);
+        //float distance = Vector2.Distance(player.transform.position, transform.position);
+        //state = distance <= 3.0f ? State.ATTACK : State.PATROL;
+        state = hit ? State.ATTACK : State.PATROL;
+        Debug.DrawLine(transform.position, transform.position + transform.up * 10.0f, hit ? Color.red : Color.green);
 
         switch (state)
         {
