@@ -2,18 +2,18 @@ using UnityEngine;
 
 public class PathFollower : MonoBehaviour
 {
-    bool linear = true;
+    bool linear = false;
 
     // Logic variables
     [SerializeField]
     GameObject[] waypoints;
-    int curr = -1;
-    int next = 0;
+    int curr = 0;
+    int next = 1;
 
     // Physics variables
     Rigidbody2D rb;
     float moveSpeed = 10.0f;    // linear velocity = 10 units per second
-    float turnSpeed = 100.0f;   // angular velocity = 100 degrees per second
+    float turnSpeed = 500.0f;   // angular velocity = 500 degrees per second
     float ahead = 2.0f;         // How far to look ahead along the projected path
 
     void Start()
@@ -37,7 +37,8 @@ public class PathFollower : MonoBehaviour
         if (linear)
             return;
 
-        Vector2 force = Steering.FollowLine(gameObject, waypoints, ref curr, ref next, ahead, moveSpeed, turnSpeed);
+        Vector2 force = Steering.FollowLine(gameObject, waypoints, ref curr, ref next, ahead, moveSpeed, turnSpeed * Time.deltaTime);
+        transform.up = rb.linearVelocity.normalized;
         rb.AddForce(force);
     }
 
