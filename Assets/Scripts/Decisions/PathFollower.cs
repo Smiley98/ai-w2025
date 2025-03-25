@@ -12,9 +12,8 @@ public class PathFollower : MonoBehaviour
 
     // Physics variables
     Rigidbody2D rb;
-    float moveSpeed = 10.0f;    // linear velocity = 10 units per second
-    float turnSpeed = 500.0f;   // angular velocity = 500 degrees per second
-    float ahead = 2.0f;         // How far to look ahead along the projected path
+    float speed = 10.0f;
+    float ahead = 2.0f;
 
     void Start()
     {
@@ -37,7 +36,7 @@ public class PathFollower : MonoBehaviour
         if (linear)
             return;
 
-        Vector2 force = Steering.FollowLine(gameObject, waypoints, ref curr, ref next, ahead, moveSpeed, turnSpeed * Time.deltaTime);
+        Vector2 force = Steering.FollowLine(gameObject, waypoints, ref curr, ref next, ahead, speed);
         transform.up = rb.linearVelocity.normalized;
         rb.AddForce(force);
     }
@@ -60,6 +59,6 @@ public class PathFollower : MonoBehaviour
         curr = curr % waypoints.Length;
         next = next % waypoints.Length;
         transform.position = waypoints[curr].transform.position;
-        rb.linearVelocity = (waypoints[next].transform.position - waypoints[curr].transform.position).normalized * moveSpeed;
+        rb.linearVelocity = (waypoints[next].transform.position - waypoints[curr].transform.position).normalized * speed;
     }
 }
