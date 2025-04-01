@@ -1308,7 +1308,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 14fadae271a2a9945a7e595f869ef68c, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1354,7 +1354,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0.21133333}
-  m_Radius: 0.5
+  m_Radius: 0.75
 --- !u!212 &1922229505
 SpriteRenderer:
   m_ObjectHideFlags: 0

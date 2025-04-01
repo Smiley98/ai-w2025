@@ -48,12 +48,8 @@ public class Enemy : MonoBehaviour
                 Attack();
                 break;
         }
-
-        //RaycastHit2D obstacleRaycast = Physics2D.Raycast(transform.position, toPlayer, playerDetectRadius);
-        // Optional: add additional debug visualizations
-        float av = 500.0f * Mathf.Deg2Rad * Time.deltaTime;
-        transform.up = Vector3.RotateTowards(transform.up, rb.linearVelocity.normalized, av, 0.0f).normalized;
-        Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f);
+        Avoid();
+        UpdateAngularVelocity();
     }
 
     void UpdateState()
@@ -80,6 +76,32 @@ public class Enemy : MonoBehaviour
     {
         Vector2 force = Steering.Seek(rb, player.transform.position, speed);
         rb.AddForce(force);
+    }
+
+    // Steer away from obstacles
+    void Avoid()
+    {
+        Vector3 dirLeft = Quaternion.Euler(0.0f, 0.0f, 20.0f) * transform.up;
+        Vector3 dirRight = Quaternion.Euler(0.0f, 0.0f, -20.0f) * transform.up;
+        RaycastHit2D hitLeft = Physics2D.Raycast(transform.position, dirLeft, obstacleDetectRadius);
+        RaycastHit2D hitRight = Physics2D.Raycast(transform.position, dirRight, obstacleDetectRadius);
+        if (hitLeft && hitLeft.collider.CompareTag("Obstacle"))
+        {
+            // Turn right
+            rb.AddForce(Steering.Seek(rb, transform.right * obstacleDetectRadius, speed));
+        }
+        else if (hitRight && hitRight.collider.CompareTag("Obstacle"))
+        {
+            // Turn left
+            rb.AddForce(Steering.Seek(rb, -transform.right * obstacleDetectRadius, speed));
+        }
+    }
+
+    void UpdateAngularVelocity()
+    {
+        float av = 250.0f * Mathf.Deg2Rad * Time.deltaTime;
+        transform.up = Vector3.RotateTowards(transform.up, rb.linearVelocity.normalized, av, 0.0f).normalized;
+        Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f);
     }
 }
 
