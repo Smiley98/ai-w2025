@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Enemy : MonoBehaviour
 {
@@ -36,30 +37,23 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        //UpdateState();
-        //switch (state)
-        //{
-        //    case State.PATROL:
-        //        Patrol();
-        //        break;
-        //
-        //    case State.ATTACK:
-        //        Attack();
-        //        break;
-        //}
+        UpdateState();
+        switch (state)
+        {
+            case State.PATROL:
+                Patrol();
+                break;
+        
+            case State.ATTACK:
+                Attack();
+                break;
+        }
 
         //RaycastHit2D obstacleRaycast = Physics2D.Raycast(transform.position, toPlayer, playerDetectRadius);
         // Optional: add additional debug visualizations
-        //Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f);
-
-        // Task: Find a nice way to rotate given from/to directions
-        Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        mouse.z = 0.0f;
-        float angularVelocity = 100.0f * Mathf.Deg2Rad;
-        Vector3 from = transform.up;
-        Vector3 to = (mouse - transform.position).normalized;
-        transform.up = Vector3.RotateTowards(from, to, angularVelocity * Time.deltaTime, 0.0f).normalized;
-        Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f, Color.green);
+        float av = 500.0f * Mathf.Deg2Rad * Time.deltaTime;
+        transform.up = Vector3.RotateTowards(transform.up, rb.linearVelocity.normalized, av, 0.0f).normalized;
+        Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f);
     }
 
     void UpdateState()
@@ -74,17 +68,26 @@ public class Enemy : MonoBehaviour
         state = playerVisible ? State.ATTACK : State.PATROL;
     }
 
+    // Seek waypoints
     void Patrol()
     {
         Vector2 force = Steering.FollowLine(gameObject, waypoints, ref curr, ref next, ahead, speed);
-        transform.up = rb.linearVelocity.normalized;
         rb.AddForce(force);
     }
 
+    // Seek player
     void Attack()
     {
         Vector2 force = Steering.Seek(rb, player.transform.position, speed);
-        transform.up = rb.linearVelocity.normalized;
         rb.AddForce(force);
     }
 }
+
+// Smooth-rotation towards mouse test:
+//Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+//mouse.z = 0.0f;
+//float angularVelocity = 100.0f * Mathf.Deg2Rad;
+//Vector3 from = transform.up;
+//Vector3 to = (mouse - transform.position).normalized;
+//transform.up = Vector3.RotateTowards(from, to, angularVelocity * Time.deltaTime, 0.0f).normalized;
+//Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f, Color.green);
