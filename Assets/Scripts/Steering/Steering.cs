@@ -46,4 +46,11 @@ public static class Steering
 
         return Seek(seeker.GetComponent<Rigidbody2D>(), projNext, speed);
     }
+
+    //public static float RotateTowards(Vector3 currentDirection, Vector3 desiredDirection, float turnSpeed)
+    //{
+    //    float angle = Vector2.SignedAngle(currentDirection, desiredDirection);
+    //    
+    //    seeker.rotation = Mathf.MoveTowardsAngle(seeker.rotation, seeker.rotation + angle, turnSpeed/*degrees per seconnd*/);
+    //}
 }

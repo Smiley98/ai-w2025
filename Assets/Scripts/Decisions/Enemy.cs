@@ -3,27 +3,31 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    // Sensors
+    [SerializeField]
+    GameObject player;
+
+    // Path following
+    [SerializeField]
+    GameObject[] waypoints;
+    int curr = 0;
+    int next = 1;
+
+    // Physics
+    Rigidbody2D rb;
+    float speed = 10.0f;
+    float ahead = 2.0f;
+
     enum State
     {
         PATROL,
         ATTACK
     }
 
+    // Behaviour
     State state = State.PATROL;
-
-    [SerializeField]
-    GameObject player;
-
-    // Logic variables
-    [SerializeField]
-    GameObject[] waypoints;
-    int curr = 0;
-    int next = 1;
-
-    // Physics variables
-    Rigidbody2D rb;
-    float speed = 10.0f;
-    float ahead = 2.0f;
+    float playerDetectRadius = 5.0f;
+    float obstacleDetectRadius = 2.5f;
 
     void Start()
     {
@@ -32,27 +36,42 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        // Better gameplay idea:
-        // Instead of shooting a ray where the enemy is looking, shoot a ray towards the player.
-        // Next week we will do this. We will add obstacles to the scene so the player isn't always visible!
-        // We will also add combat!!!
+        //UpdateState();
+        //switch (state)
+        //{
+        //    case State.PATROL:
+        //        Patrol();
+        //        break;
+        //
+        //    case State.ATTACK:
+        //        Attack();
+        //        break;
+        //}
 
-        bool hit = Physics2D.Raycast(transform.position, transform.up);
-        //float distance = Vector2.Distance(player.transform.position, transform.position);
-        //state = distance <= 3.0f ? State.ATTACK : State.PATROL;
-        state = hit ? State.ATTACK : State.PATROL;
-        Debug.DrawLine(transform.position, transform.position + transform.up * 10.0f, hit ? Color.red : Color.green);
+        //RaycastHit2D obstacleRaycast = Physics2D.Raycast(transform.position, toPlayer, playerDetectRadius);
+        // Optional: add additional debug visualizations
+        //Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f);
 
-        switch (state)
-        {
-            case State.PATROL:
-                Patrol();
-                break;
+        // Task: Find a nice way to rotate given from/to directions
+        Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouse.z = 0.0f;
+        float angularVelocity = 100.0f * Mathf.Deg2Rad;
+        Vector3 from = transform.up;
+        Vector3 to = (mouse - transform.position).normalized;
+        transform.up = Vector3.RotateTowards(from, to, angularVelocity * Time.deltaTime, 0.0f).normalized;
+        Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f, Color.green);
+    }
 
-            case State.ATTACK:
-                Attack();
-                break;
-        }
+    void UpdateState()
+    {
+        // AB = B - A
+        Vector3 toPlayer = (player.transform.position - transform.position).normalized;
+        RaycastHit2D playerRaycast = Physics2D.Raycast(transform.position, toPlayer, playerDetectRadius);
+
+        // In the future we may want to separate distance vs line-of-sight
+        bool playerDetected = Vector2.Distance(player.transform.position, transform.position) <= playerDetectRadius;
+        bool playerVisible = playerRaycast && playerRaycast.collider.CompareTag("Player");
+        state = playerVisible ? State.ATTACK : State.PATROL;
     }
 
     void Patrol()
