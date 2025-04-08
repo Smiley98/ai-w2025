@@ -1445,6 +1445,7 @@ MonoBehaviour:
   - {fileID: 955921028}
   - {fileID: 1837464680}
   - {fileID: 444810217}
+  bulletPrefab: {fileID: 8286766717145496324, guid: 54fb81b1dfc568141b2916a267e75621, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

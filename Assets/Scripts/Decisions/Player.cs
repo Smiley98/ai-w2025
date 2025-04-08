@@ -5,7 +5,17 @@ public class Player : MonoBehaviour
     [SerializeField]
     GameObject bulletPrefab;
 
+    Weapon weapon = null;
+
     float bulletTimer = 0.0f;
+
+    void Start()
+    {
+        weapon = new Rifle();
+        weapon.weaponPrefab = bulletPrefab;
+        weapon.owner = gameObject;
+        weapon.timeMax = 0.5f;
+    }
 
     void Update()
     {
@@ -44,19 +54,9 @@ public class Player : MonoBehaviour
         mouse.z = 0.0f;
         Vector3 direction = (mouse - transform.position).normalized;
 
-        bulletTimer += Time.deltaTime;
-        if (Input.GetKey(KeyCode.Space) && bulletTimer >= 0.1f)
+        if (Input.GetKey(KeyCode.Space))
         {
-            bulletTimer = 0.0f;
-
-            GameObject bullet = Instantiate(bulletPrefab);
-            bullet.transform.localScale *= 0.25f;
-            float bulletRadius = bullet.transform.localScale.x * 0.5f;
-            float playerRadius = transform.localScale.x * 0.5f;
-
-            bullet.transform.position = transform.position + direction * (playerRadius + bulletRadius);
-            bullet.GetComponent<Rigidbody2D>().linearVelocity = direction * 20.0f;
-            Destroy(bullet, 1.0f);
+            weapon.Shoot(direction);
         }
     }
 }

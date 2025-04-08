@@ -28,9 +28,19 @@ public class Enemy : MonoBehaviour
     float playerDetectRadius = 5.0f;
     float obstacleDetectRadius = 2.5f;
 
+    [SerializeField]
+    GameObject bulletPrefab;
+
+    Weapon weapon = null;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        weapon = new Rifle();
+        weapon.weaponPrefab = bulletPrefab;
+        weapon.owner = gameObject;
+        weapon.timeMax = 0.5f;
     }
 
     void Update()
@@ -74,6 +84,7 @@ public class Enemy : MonoBehaviour
     {
         Vector2 force = Steering.Seek(rb, player.transform.position, speed);
         rb.AddForce(force);
+        weapon.Shoot((player.transform.position - transform.position).normalized);
     }
 
     // Steer away from obstacles
