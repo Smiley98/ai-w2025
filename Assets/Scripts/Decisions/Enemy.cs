@@ -1,6 +1,4 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class Enemy : MonoBehaviour
 {
@@ -16,7 +14,7 @@ public class Enemy : MonoBehaviour
 
     // Physics
     Rigidbody2D rb;
-    float speed = 10.0f;
+    float speed = 5.0f;
     float ahead = 2.0f;
 
     enum State
