@@ -14,9 +14,6 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Bullet"))
-            return;
-
         if (team == Team.NONE)
             Debug.LogError("Uninitialized bullet team");
 
@@ -35,6 +32,15 @@ public class Projectile : MonoBehaviour
             Player player = collision.gameObject.GetComponent<Player>();
             player.health -= damage;
         }
+
+        // Don't let bullets destroy each other
+        if (collision.CompareTag("Bullet"))
+            return;
+
+        // Don't let the player or enemy destroy their own bullets
+        if (team == Team.PLAYER && collision.CompareTag("Player") ||
+            team == Team.ENEMY && collision.CompareTag("Enemy"))
+            return;
 
         Destroy(gameObject);
     }

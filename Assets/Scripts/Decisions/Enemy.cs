@@ -120,12 +120,3 @@ public class Enemy : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f, GetComponent<SpriteRenderer>().color);
     }
 }
-
-// Smooth-rotation towards mouse test:
-//Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-//mouse.z = 0.0f;
-//float angularVelocity = 100.0f * Mathf.Deg2Rad;
-//Vector3 from = transform.up;
-//Vector3 to = (mouse - transform.position).normalized;
-//transform.up = Vector3.RotateTowards(from, to, angularVelocity * Time.deltaTime, 0.0f).normalized;
-//Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f, Color.green);
