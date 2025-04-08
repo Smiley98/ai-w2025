@@ -5,6 +5,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     GameObject bulletPrefab;
 
+    float bulletTimer = 0.0f;
+
     void Update()
     {
         Move();
@@ -40,10 +42,13 @@ public class Player : MonoBehaviour
     {
         Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouse.z = 0.0f;
-
         Vector3 direction = (mouse - transform.position).normalized;
-        if (Input.GetKeyDown(KeyCode.Space))
+
+        bulletTimer += Time.deltaTime;
+        if (Input.GetKey(KeyCode.Space) && bulletTimer >= 0.1f)
         {
+            bulletTimer = 0.0f;
+
             GameObject bullet = Instantiate(bulletPrefab);
             bullet.transform.localScale *= 0.25f;
             float bulletRadius = bullet.transform.localScale.x * 0.5f;
