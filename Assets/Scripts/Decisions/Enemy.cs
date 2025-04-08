@@ -110,7 +110,7 @@ public class Enemy : MonoBehaviour
     {
         float av = 250.0f * Mathf.Deg2Rad * Time.deltaTime;
         transform.up = Vector3.RotateTowards(transform.up, rb.linearVelocity.normalized, av, 0.0f).normalized;
-        Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f);
+        Debug.DrawLine(transform.position, transform.position + transform.up * 5.0f, GetComponent<SpriteRenderer>().color);
     }
 }
 

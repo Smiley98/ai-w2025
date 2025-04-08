@@ -7,11 +7,9 @@ public class Player : MonoBehaviour
 
     Weapon weapon = null;
 
-    float bulletTimer = 0.0f;
-
     void Start()
     {
-        weapon = new Rifle();
+        weapon = new Shotgun();
         weapon.weaponPrefab = bulletPrefab;
         weapon.owner = gameObject;
         weapon.timeMax = 0.5f;
@@ -53,6 +51,7 @@ public class Player : MonoBehaviour
         Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         mouse.z = 0.0f;
         Vector3 direction = (mouse - transform.position).normalized;
+        Debug.DrawLine(transform.position, transform.position + direction * 5.0f, GetComponent<SpriteRenderer>().color);
 
         if (Input.GetKey(KeyCode.Space))
         {
