@@ -6,12 +6,16 @@ public class Player : MonoBehaviour
     GameObject bulletPrefab;
 
     Weapon weapon = null;
+    public float health = 100.0f;
 
     void Start()
     {
         weapon = new Shotgun();
         weapon.weaponPrefab = bulletPrefab;
         weapon.owner = gameObject;
+        weapon.team = Team.PLAYER;
+        weapon.damage = 10.0f;
+
         weapon.timeMax = 0.5f;
     }
 
@@ -19,6 +23,9 @@ public class Player : MonoBehaviour
     {
         Move();
         Shoot();
+
+        if (health <= 0.0f)
+            Debug.Log("Player died");
     }
 
     void Move()

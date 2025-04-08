@@ -33,6 +33,8 @@ public class Enemy : MonoBehaviour
 
     Weapon weapon = null;
 
+    public float health = 25.0f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -40,6 +42,8 @@ public class Enemy : MonoBehaviour
         weapon = new Rifle();
         weapon.weaponPrefab = bulletPrefab;
         weapon.owner = gameObject;
+        weapon.team = Team.ENEMY;
+        weapon.damage = 10.0f;
         weapon.timeMax = 0.5f;
     }
 
@@ -70,6 +74,9 @@ public class Enemy : MonoBehaviour
         bool playerDetected = Vector2.Distance(player.transform.position, transform.position) <= playerDetectRadius;
         bool playerVisible = playerRaycast && playerRaycast.collider.CompareTag("Player");
         state = playerVisible ? State.ATTACK : State.PATROL;
+
+        if (health <= 0.0f)
+            Debug.Log("Enemy died");
     }
 
     // Seek waypoints
